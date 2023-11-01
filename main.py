@@ -7,9 +7,12 @@ class StudyTimer:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("400x400")
-        self.root.title("Study Timer")
+        self.root.title("Study Timer - Designed by Mehmet")
 
         self.s = ttk.Style()
+        self.s.configure('Color1.TFrame', background='green')
+        self.s.configure('Color2.TFrame', background='blue')
+        self.s.configure('Color3.TFrame', background='red')
         self.s.configure("TNoteBook.Tab", font=("Ubuntu", 20))
         self.s.configure("TButton.Tab", font=("Ubuntu", 20))
         self.s.configure("TButton")
@@ -17,9 +20,9 @@ class StudyTimer:
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill="both", pady=10, expand=False)
 
-        self.tab1 = ttk.Frame(self.tabs, width=400, height=60)
-        self.tab2 = ttk.Frame(self.tabs, width=400, height=60)
-        self.tab3 = ttk.Frame(self.tabs, width=400, height=60)
+        self.tab1 = ttk.Frame(self.tabs, width=400, height=60, style='Color1.TFrame')
+        self.tab2 = ttk.Frame(self.tabs, width=400, height=60, style='Color2.TFrame')
+        self.tab3 = ttk.Frame(self.tabs, width=400, height=60, style='Color3.TFrame')
 
         # Tabs Labels
         self.tabs.add(self.tab1, text="Study")
