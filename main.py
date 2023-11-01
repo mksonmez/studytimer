@@ -44,11 +44,36 @@ class StudyTimer:
         self.start_button = ttk.Button(self.grid_layout, text="Start", command=self.start_timer_thread)
         self.start_button.grid(row=0, column=0)
 
+        # Skip Button
+        self.skip_button = ttk.Button(self.grid_layout, text="Skip", command=self.skip_clock)
+        self.skip_button.grid(row=0, column=1)
+
+        # Reset Button
+        self.reset_button = ttk.Button(self.grid_layout, text="Reset", command=self.reset_clock)
+        self.reset_button.grid(row=0, column=2)
+
+        self.study_counter_label = ttk.Label(self.grid_layout, text="Study Points: 0", font=("Ubuntu", 16))
+        self.study_counter_label.grid(row=1, column=0, columnspan=3, pady=10)
+
+        self.points = 0
+        self.skipped = False
+        self.stopped = False
+        self.running = False
+
+        # Textbox
+        self.textbox_label = tk.Label(self.grid_layout, text="Leave a Note", font=("Ubuntu", 12), justify="center")
+        self.textbox_label.grid(row=2, column=1, pady=10)
+
+        self.textbox = tk.Text(self.root, height=5, font=("Ubuntu", 12))
+        self.textbox.pack(padx=15)
+
         self.root.mainloop()
 
     def start_timer_thread(self):
-        t = threading.Thread(target=self.start_timer)
-        t.start()
+        if not self.running:
+            t = threading.Thread(target=self.start_timer)
+            t.start()
+            self.running = True
 
     def start_timer(self):        
         self.stopped = False
@@ -96,24 +121,31 @@ class StudyTimer:
                 self.tabs.select(0)
                 self.start_timer()
         else:
-            print("Error")
-        
-        # Skip Button
-        self.skip_button = ttk.Button(self.grid_layout, text="Skip", command=self.skip_clock)
-        self.skip_button.grid(row=0, column=1)
+            print("Invalid timer ID")
 
-        # Reset Button
-        self.reset_button = ttk.Button(self.grid_layout, text="Reset", command=self.reset_clock)
-        self.reset_button.grid(row=0, column=2)
-
-        self.study_counter_label = ttk.Label(self.grid_layout, text="Study Points: 0", font=("Ubuntu", 16))
-        self.study_counter_label.grid(row=1, column=0, columnspan=3, pady=10)
-
-        self.points = 0
+    def reset_clock(self):
+        self.stopped = True
         self.skipped = False
-        self.stopped = False
         self.running = False
-    
-    #ToDo: Add a text box
+        self.points = 0
+        self.study_timer_label.config(text="25:00")
+        self.short_break_timer_label.config(text="05:00")
+        self.long_break_timer_label.config(text="15:00")
+        self.study_counter_label.config(text="Study Points: 0")
+
+    def skip_clock(self):
+        current_tab = self.tabs.index(self.tabs.select())
+        
+        if current_tab == 0:
+            self.study_timer_label.config(text="25:00")
+        elif current_tab == 1:
+            self.short_break_timer_label.config(text="05:00")
+        elif current_tab == 2:
+            self.long_break_timer_label.config(text="15:00")
+
+        self.stopped = True
+        self.skipped = True
+
+    #ToDO: Save textbox values localy
 
 StudyTimer()
