@@ -2,27 +2,42 @@ import time
 import threading
 import tkinter as tk
 from tkinter import ttk
+import sys, os
+
+# Snippet from https://stackoverflow.com/questions/7674790/bundling-data-files-with-pyinstaller-onefile
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class StudyTimer:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("400x400")
+        # Set the window icon
+        self.root.iconbitmap(resource_path("profile.ico"))
+        # Set the window title
         self.root.title("Study Timer - Designed by Mehmet")
 
         self.s = ttk.Style()
-        self.s.configure('Color1.TFrame', background='green')
-        self.s.configure('Color2.TFrame', background='blue')
-        self.s.configure('Color3.TFrame', background='red')
+        self.s.configure("Color1.TFrame", background="green")
+        self.s.configure("Color2.TFrame", background="blue")
+        self.s.configure("Color3.TFrame", background="red")
         self.s.configure("TNoteBook.Tab", font=("Ubuntu", 20))
         self.s.configure("TButton.Tab", font=("Ubuntu", 20))
-        self.s.configure("TButton", background = 'blue', bd = 10, foreground = 'black', relief="raised", borderwidth=1, focusthickness=3, focuscolor='none')
+        self.s.configure("TButton", background = "blue", bd = 10, foreground = "black", relief="raised", borderwidth=1, focusthickness=3, focuscolor="none")
 
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill="both", pady=10, expand=False)
 
-        self.tab1 = ttk.Frame(self.tabs, width=400, height=60, style='Color1.TFrame')
-        self.tab2 = ttk.Frame(self.tabs, width=400, height=60, style='Color2.TFrame')
-        self.tab3 = ttk.Frame(self.tabs, width=400, height=60, style='Color3.TFrame')
+        self.tab1 = ttk.Frame(self.tabs, width=400, height=60, style="Color1.TFrame")
+        self.tab2 = ttk.Frame(self.tabs, width=400, height=60, style="Color2.TFrame")
+        self.tab3 = ttk.Frame(self.tabs, width=400, height=60, style="Color3.TFrame")
 
         # Tabs Labels
         self.tabs.add(self.tab1, text="Study")
