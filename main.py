@@ -15,7 +15,7 @@ class StudyTimer:
         self.s.configure('Color3.TFrame', background='red')
         self.s.configure("TNoteBook.Tab", font=("Ubuntu", 20))
         self.s.configure("TButton.Tab", font=("Ubuntu", 20))
-        self.s.configure("TButton")
+        self.s.configure("TButton", background = 'blue', bd = 10, foreground = 'black', relief="raised", borderwidth=1, focusthickness=3, focuscolor='none')
 
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill="both", pady=10, expand=False)
@@ -71,7 +71,49 @@ class StudyTimer:
                 else:
                     self.tabs.select(1)
                 self.start_timer()
+
+        elif timer_id == 2:
+            full_seconds = 60 * 5
+            while full_seconds > 0 and not self.stopped:
+                minutes, seconds = divmod(full_seconds, 60)
+                self.short_break_timer_label.config(text=f"{minutes:02d}:{seconds:02d}")
+                self.root.update()
+                time.sleep(1)
+                full_seconds -= 1
+            if not self.stopped or self.skipped:
+                self.tabs.select(0)
+                self.start_timer()
+
+        elif timer_id == 3:
+            full_seconds = 60 * 15
+            while full_seconds > 0 and not self.stopped:
+                minutes, seconds = divmod(full_seconds, 60)
+                self.long_break_timer_label.config(text=f"{minutes:02d}:{seconds:02d}")
+                self.root.update()
+                time.sleep(1)
+                full_seconds -= 1
+            if not self.stopped or self.skipped:
+                self.tabs.select(0)
+                self.start_timer()
+        else:
+            print("Error")
+        
+        # Skip Button
+        self.skip_button = ttk.Button(self.grid_layout, text="Skip", command=self.skip_clock)
+        self.skip_button.grid(row=0, column=1)
+
+        # Reset Button
+        self.reset_button = ttk.Button(self.grid_layout, text="Reset", command=self.reset_clock)
+        self.reset_button.grid(row=0, column=2)
+
+        self.study_counter_label = ttk.Label(self.grid_layout, text="Study Points: 0", font=("Ubuntu", 16))
+        self.study_counter_label.grid(row=1, column=0, columnspan=3, pady=10)
+
+        self.points = 0
+        self.skipped = False
+        self.stopped = False
+        self.running = False
     
-    #ToDo: Add skip and reset timer
+    #ToDo: Add a text box
 
 StudyTimer()
