@@ -1,7 +1,7 @@
 import time
 import threading
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 import sys, os
 
 # Snippet from https://stackoverflow.com/questions/7674790/bundling-data-files-with-pyinstaller-onefile
@@ -18,7 +18,7 @@ def resource_path(relative_path):
 class StudyTimer:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.geometry("400x400")
+        self.root.geometry("400x440")
         # Set the window icon
         self.root.iconbitmap(resource_path("profile.ico"))
         # Set the window title
@@ -33,7 +33,7 @@ class StudyTimer:
         self.s.configure("TButton", background = "blue", bd = 10, foreground = "black", relief="raised", borderwidth=1, focusthickness=3, focuscolor="none")
 
         self.tabs = ttk.Notebook(self.root)
-        self.tabs.pack(fill="both", pady=10, expand=False)
+        self.tabs.pack(fill="both", expand=False)
 
         self.tab1 = ttk.Frame(self.tabs, width=400, height=60, style="Color1.TFrame")
         self.tab2 = ttk.Frame(self.tabs, width=400, height=60, style="Color2.TFrame")
@@ -46,14 +46,14 @@ class StudyTimer:
 
         # Time Labels
         self.study_timer_label = ttk.Label(self.tab1, text="25:00", font=("Ubuntu", 48))
-        self.study_timer_label.pack(pady=10)
+        self.study_timer_label.pack()
         self.short_break_timer_label = ttk.Label(self.tab2, text="05:00", font=("Ubuntu", 48))
-        self.short_break_timer_label.pack(pady=10)
+        self.short_break_timer_label.pack()
         self.long_break_timer_label = ttk.Label(self.tab3, text="15:00", font=("Ubuntu", 48))
-        self.long_break_timer_label.pack(pady=10)
+        self.long_break_timer_label.pack()
 
         self.grid_layout = ttk.Frame(self.root)
-        self.grid_layout.pack(pady=10)
+        self.grid_layout.pack(pady=20)
 
         # Start Button
         self.start_button = ttk.Button(self.grid_layout, text="Start", command=self.start_timer_thread)
@@ -75,12 +75,20 @@ class StudyTimer:
         self.stopped = False
         self.running = False
 
+        # Load Button
+        self.load_button = ttk.Button(self.grid_layout, text="Load", command=self.load_note)
+        self.load_button.grid(row=4, column=0)
+
+        # Save Button
+        self.save_button = ttk.Button(self.grid_layout, text="Save", command=self.save_note)
+        self.save_button.grid(row=4, column=2)
+
         # Textbox
         self.textbox_label = tk.Label(self.grid_layout, text="Leave a Note", font=("Ubuntu", 12), justify="center")
         self.textbox_label.grid(row=2, column=1, pady=10)
 
-        self.textbox = tk.Text(self.root, height=5, font=("Ubuntu", 12))
-        self.textbox.pack(padx=15)
+        self.textbox = tk.Text(self.root, height=6, font=("Ubuntu", 12))
+        self.textbox.pack(padx=15, pady=10)
 
         self.root.mainloop()
 
@@ -89,6 +97,21 @@ class StudyTimer:
             t = threading.Thread(target=self.start_timer)
             t.start()
             self.running = True
+
+    def save_note(self):
+        selected_file = filedialog.asksaveasfile(parent=self.root, defaultextension=".txt", filetypes=[("Text file",".txt"),("All files","*")])
+        if selected_file is None:
+            return
+        filetext = str(self.textbox.get(1.0,5.0))
+        selected_file.write(filetext)
+        selected_file.close()
+    
+    def load_note(self):
+        selected_file = filedialog.askopenfile(parent=self.root, title="Select a note", filetypes=[("Text file","*.txt"), ("All files","*.*")])
+        if selected_file is None:
+            return
+        # write to console
+        print(selected_file.read())
 
     def start_timer(self):        
         self.stopped = False
@@ -161,6 +184,6 @@ class StudyTimer:
         self.stopped = True
         self.skipped = True
 
-    #ToDO: Save textbox values localy
+    #ToDO: load the saved note to GUI
 
 StudyTimer()
